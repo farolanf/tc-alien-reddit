@@ -15,6 +15,17 @@ if (process.env.BROWSER) {
   );
 }
 
+if (!process.env.REDDIT_USER_AGENT || !process.env.REDDIT_CLIENT_ID || !process.env.REDDIT_CLIENT_SECRET) {
+  throw new Error(`
+    *******************************************************
+    Please set the following reddit environment variables:
+    - REDDIT_USER_AGENT
+    - REDDIT_CLIENT_ID
+    - REDDIT_CLIENT_SECRET
+    *******************************************************
+  `);
+}
+
 module.exports = {
   // Node.js app
   port: process.env.PORT || 3000,
@@ -67,5 +78,13 @@ module.exports = {
         process.env.TWITTER_CONSUMER_SECRET ||
         'KTZ6cxoKnEakQCeSpZlaUCJWGAlTEBJj0y2EMkUBujA7zWSvaQ',
     },
+  },
+
+  reddit: {
+    tokenUrl: 'https://www.reddit.com/api/v1/access_token',
+    apiUrl: 'https://oauth.reddit.com',
+    userAgent: process.env.REDDIT_USER_AGENT,
+    clientId: process.env.REDDIT_CLIENT_ID,
+    clientSecret: process.env.REDDIT_CLIENT_SECRET,
   },
 };

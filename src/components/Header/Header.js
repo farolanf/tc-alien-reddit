@@ -8,15 +8,32 @@
  */
 
 import useStyles from 'isomorphic-style-loader/useStyles';
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setRuntimeVariable } from '../../actions/runtime';
 import s from './Header.css';
 import Link from '../Link';
+import history from '../../history';
 import Navigation from '../Navigation';
 import logoUrl from './logo-small.png';
 import logoUrl2x from './logo-small@2x.png';
 
-export default function Header() {
+function Header({ redditLoading, setRuntimeVariable }) {
   useStyles(s);
+  const [redditQuery, setRedditQuery] = useState('');
+
+  const handleChangeRedditQuery = e => {
+    setRedditQuery(e.target.value);
+  };
+
+  const handleSubmitReddit = e => {
+    e.preventDefault();
+    setRuntimeVariable({ name: 'subreddit', value: redditQuery });
+    setRedditQuery('');
+    history.push('/reddit');
+  };
+
   return (
     <div className={s.root}>
       <div className={s.container}>
@@ -31,6 +48,16 @@ export default function Header() {
           />
           <span className={s.brandTxt}>Your Company</span>
         </Link>
+        <div className={s.search}>
+          <form onSubmit={handleSubmitReddit}>
+            <input
+              placeholder={redditLoading ? 'loading...' : 'subreddit'}
+              value={redditQuery}
+              onChange={handleChangeRedditQuery}
+              disabled={redditLoading}
+            />
+          </form>
+        </div>
         <div className={s.banner}>
           <h1 className={s.bannerTitle}>React</h1>
           <p className={s.bannerDesc}>Complex web apps made easy</p>
@@ -39,3 +66,17 @@ export default function Header() {
     </div>
   );
 }
+
+Header.propTypes = {
+  redditLoading: PropTypes.bool,
+};
+
+const mapState = state => ({
+  redditLoading: state.runtime.redditLoading,
+});
+
+const mapDispatch = {
+  setRuntimeVariable,
+};
+
+export default connect(mapState, mapDispatch)(Header);

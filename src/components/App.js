@@ -42,7 +42,9 @@ export default function App({ context, insertCss, children }) {
   return (
     <StyleContext.Provider value={{ insertCss }}>
       <ApplicationContext.Provider value={{ context }}>
-        {React.Children.only(children)}
+        <ReduxProvider store={context.store}>
+          {React.Children.only(children)}
+        </ReduxProvider>
       </ApplicationContext.Provider>
     </StyleContext.Provider>
   );

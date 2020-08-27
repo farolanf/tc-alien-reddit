@@ -52,3 +52,8 @@
   font-size: 1.25em;
   margin: 0;
 }
+
+.search {
+  display: flex;
+  justify-content: flex-end;
+}
